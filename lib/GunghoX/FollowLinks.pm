@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 8898 2007-11-10T15:36:50.079780Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 8908 2007-11-11T05:39:52.397722Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -8,9 +8,9 @@ use strict;
 use warnings;
 use base qw(Gungho::Component);
 use Gungho::Util;
-our $VERSION = '0.00001';
+our $VERSION = '0.00002';
 
-__PACKAGE__->mk_classdata($_) for qw(follow_links_parser);
+__PACKAGE__->mk_classdata($_) for qw(follow_links_parsers);
 
 sub setup
 {
@@ -19,10 +19,10 @@ sub setup
 
     my $config = $c->config->{follow_links};
 
-    $c->follow_links_parser( {} );
+    $c->follow_links_parsers( {} );
     foreach my $parser_config (@{ $config->{parsers} }) {
         my $module = $parser_config->{module};
-        my $pkg    = Gungho::Util::load_module($module, 'GunghoX::FollowLinks');
+        my $pkg    = Gungho::Util::load_module($module, 'GunghoX::FollowLinks::Parser');
         my $obj    = $pkg->new( %{ $parser_config->{config} } );
 
         $obj->register( $c );
@@ -69,7 +69,16 @@ GunghoX::FollowLinks - Automatically Follow Links Within Responses
           rules:
             - module: URI
               config:
-                - host: ^example\.com
+                match:
+                  - host: ^example\.com
+                    action: FOLLOW_ALLOW
+
+  package MyHandler;
+  sub handle_response
+  {
+    my ($self, $c, $req, $res) = @_;
+    $c->follow_links($res);
+  }
 
 =head1 DESCRIPTION
 

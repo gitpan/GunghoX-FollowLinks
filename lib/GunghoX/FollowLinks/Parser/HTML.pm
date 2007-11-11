@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/HTML.pm 8893 2007-11-10T14:30:51.466577Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/HTML.pm 8905 2007-11-11T05:32:04.269151Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -20,7 +20,11 @@ sub new
         start_h     => [ \&_start, "self,tagname,attr" ],
         report_tags => [ keys %HTML::Tagset::linkElements ],
     );
-    return $class->next::method(@_, parser => $parser);
+    return $class->next::method(
+        content_type => 'text/html',
+        @_,
+        parser => $parser
+    );
 }
 
 sub _start
@@ -33,7 +37,7 @@ sub _start
     my $container = $self->{ 'container' };
     my $c         = $self->{ 'context' };
     my $response  = $self->{ 'response' };
-    my $base      = $self->{ 'response' }->request->uri;
+    my $base      = $response->request->uri;
     foreach my $link_attr (@$links) {
         next unless exists $attr->{ $link_attr };
 

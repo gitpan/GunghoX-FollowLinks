@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/URI.pm 8897 2007-11-10T15:34:45.758392Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/URI.pm 8906 2007-11-11T05:38:56.834928Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -7,9 +7,29 @@ package GunghoX::FollowLinks::Rule::URI;
 use strict;
 use warnings;
 use base qw(GunghoX::FollowLinks::Rule);
+use GunghoX::FollowLinks::Rule qw(FOLLOW_ALLOW FOLLOW_DENY FOLLOW_DEFER);
 use URI::Match;
 
 __PACKAGE__->mk_accessors($_) for qw(match);
+
+sub new
+{
+    my $class = shift;
+    my %args  = @_;
+    my $match = $args{match};
+    foreach my $m (@$match) {
+        my $action = $m->{action};
+        if ($action eq 'FOLLOW_ALLOW') {
+            $m->{action} = FOLLOW_ALLOW;
+        } elsif ($action eq 'FOLLOW_DENY') {
+            $m->{action} = FOLLOW_DENY;
+        }
+        if ($action eq 'FOLLOW_DEFER') {
+            $m->{action} = FOLLOW_DEFER;
+        }
+    }
+    $class->next::method(%args);
+}
 
 sub apply
 {

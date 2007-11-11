@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule.pm 8893 2007-11-10T14:30:51.466577Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule.pm 8905 2007-11-11T05:32:04.269151Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -24,6 +24,25 @@ __END__
 =head1 NAME
 
 GunghoX::FollowLinks::Rule - Rule To Decide If A Link Should Be Followed
+
+=head1 SYNOPSIS
+
+  use GunghoX::FollowLinks::Rule q(FOLLOW_ALLOW FOLLOW_DENY FOLLOW_DEFER);
+
+  package MyRule;
+  use base qw(GunghoX::FollowLinks::Rule);
+
+  sub apply {
+    # custom logic
+  }
+
+=head1 CONSTANTS
+
+=head2 FOLLOW_ALLOW
+
+=head2 FOLLOW_DENY
+
+=head2 FOLLOW_DEFER
 
 =head1 METHODS
 

@@ -1,5 +1,10 @@
 Changes
 =======
 
+0.00002 Sun 11 Nov 2007
+  - Actually make it work via Gungho
+  - Add test t/02_basic.t
+  - Fix documentation
+
 0.00001 Sun 11 Nov 2007
   - Initial release

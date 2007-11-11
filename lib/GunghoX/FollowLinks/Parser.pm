@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 8893 2007-11-10T14:30:51.466577Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 8905 2007-11-11T05:32:04.269151Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -11,10 +11,16 @@ use Gungho::Request;
 use Gungho::Util;
 use GunghoX::FollowLinks::Rule qw(FOLLOW_ALLOW FOLLOW_DENY);
 
-__PACKAGE__->mk_accessors($_) for qw(rules);
+__PACKAGE__->mk_accessors($_) for qw(rules content_type);
 
-sub register { die "Must override register()" }
 sub parse { die "Must override parse()" }
+
+sub register
+{
+    my ($self, $c) = @_;
+    my $ct = $self->content_type;
+    $c->follow_links_parsers->{ $ct } = $self;
+}
 
 sub new
 {
@@ -30,7 +36,11 @@ sub new
         }
         push @rules, $rule;
     }
-    return $class->next::method(@_, rules => \@rules);
+    return $class->next::method(
+        content_type => 'DEFAULT',
+        @_,
+        rules => \@rules
+    );
 }
 
 sub apply_rules
@@ -68,6 +78,10 @@ GunghoX::FollowLinks::Parser - Base Class For FollowLinks Parser
 =head1 METHODS
 
 =head2 new(%args)
+
+=head2 content_type
+
+=head2 rules
 
 =head2 register
 
