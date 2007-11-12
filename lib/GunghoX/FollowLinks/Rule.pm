@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule.pm 8905 2007-11-11T05:32:04.269151Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule.pm 8918 2007-11-12T03:02:15.291385Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -11,9 +11,9 @@ use base qw(Gungho::Base);
 use Sub::Exporter -setup => {
     exports => [ qw(FOLLOW_ALLOW FOLLOW_DENY FOLLOW_DEFER) ]
 };
-use constant FOLLOW_ALLOW => 1;
-use constant FOLLOW_DENY  => 0;
-use constant FOLLOW_DEFER => -1;
+use constant FOLLOW_ALLOW => "FOLLOW_ALLOW";
+use constant FOLLOW_DENY  => "FOLLOW_DENY";
+use constant FOLLOW_DEFER => "FOLLOW_DEFER";
 
 sub apply { die "You must override apply()" }
 

@@ -7,6 +7,7 @@ all_from("lib/GunghoX/FollowLinks.pm");
 requires('Gungho', '0.09003');
 requires('HTML::Parser');
 requires('HTML::Tagset');
+requires('MIME::Types');
 requires('Sub::Exporter');
 requires('URI::Match');
 

@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/URI.pm 8906 2007-11-11T05:38:56.834928Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/URI.pm 8923 2007-11-12T03:07:51.610373Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -18,7 +18,7 @@ sub new
     my %args  = @_;
     my $match = $args{match};
     foreach my $m (@$match) {
-        my $action = $m->{action};
+        my $action = $m->{action} || FOLLOW_ALLOW;
         if ($action eq 'FOLLOW_ALLOW') {
             $m->{action} = FOLLOW_ALLOW;
         } elsif ($action eq 'FOLLOW_DENY') {
@@ -38,9 +38,14 @@ sub apply
     my $match = $self->match;
     foreach my $m (@$match) {
         my %m = %$m;
-        my $action = delete $m{action};
+        my $action = delete $m{action} || FOLLOW_ALLOW;
+        my $nomatch = delete $m{action_nomatch};
         if ($url->match_parts(%m)) {
             return $action;
+        }
+
+        if (defined $nomatch) {
+            return $nomatch;
         }
     }
     return &GunghoX::FollowLinks::Rule::FOLLOW_DEFER;
@@ -63,6 +68,11 @@ GunghoX::FollowLinks::Rule::URI - Follow Dependig On URI
     match => [
       { action => FOLLOW_DENY,  host => qr/^.+\.example\.org$/ },
       { action => FOLLOW_ALLOW, host => qr/^.+\.example\.com$/ },
+      {
+        action         => FOLLOW_ALLOW,
+        action_nomatch => FOLLOW_DENY,
+        host           => qr/^.+\.example\.net$/ }
+      }
     ]
   );
 
@@ -71,6 +81,8 @@ GunghoX::FollowLinks::Rule::URI - Follow Dependig On URI
 This is a rule that matches against a URL using URI::Match.
 
 =head1 METHODS
+
+=head2 new
 
 =head2 apply
 

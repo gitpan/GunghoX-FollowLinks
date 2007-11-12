@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 8905 2007-11-11T05:32:04.269151Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 8919 2007-11-12T03:03:30.295953Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -9,9 +9,9 @@ use warnings;
 use base qw(Gungho::Base);
 use Gungho::Request;
 use Gungho::Util;
-use GunghoX::FollowLinks::Rule qw(FOLLOW_ALLOW FOLLOW_DENY);
+use GunghoX::FollowLinks::Rule qw(FOLLOW_ALLOW FOLLOW_DENY FOLLOW_DEFER);
 
-__PACKAGE__->mk_accessors($_) for qw(rules content_type);
+__PACKAGE__->mk_accessors($_) for qw(rules content_type merge_rule);
 
 sub parse { die "Must override parse()" }
 
@@ -38,6 +38,7 @@ sub new
     }
     return $class->next::method(
         content_type => 'DEFAULT',
+        merge_rule   => 'ANY',
         @_,
         rules => \@rules
     );
@@ -47,23 +48,45 @@ sub apply_rules
 {
     my ($self, $c, $response, $url, $attrs) = @_;
 
+    $c->log->debug( "Applying rules for $url" );
     my $rules = $self->rules ;
     my $decision;
+    my @decision;
     foreach my $rule (@{ $rules }) {
         $decision = $rule->apply( $c, $response, $url, $attrs );
-        if ($decision == FOLLOW_ALLOW || $decision == FOLLOW_DENY) {
-            last;
+        if ($decision eq FOLLOW_ALLOW || $decision eq FOLLOW_DENY) {
+            $c->log->debug( " + Rule $rule " . (
+                $decision eq FOLLOW_ALLOW ? "ALLOW" :
+                $decision eq FOLLOW_DENY ? "DENY" :
+                $decision eq FOLLOW_DEFER ? "DEFER" :
+                "UNKNOWN"
+            ) . " for url $url");
+
+            if ($self->merge_rule eq 'ANY') {
+                $c->log->debug( " * Merge rule is 'ANY', stopping rules");
+                last;
+            }
         }
+        push @decision, $decision;
     }
 
-    return $decision == FOLLOW_ALLOW;
+    if ($self->merge_rule eq 'ALL') {
+        my @allowed = grep { $_ eq FOLLOW_ALLOW } @decision;
+        $c->log->debug( "Merge rule is 'ALL'. " . scalar @allowed . " ALLOWs from " . scalar @decision . " decisions");
+        $decision = (@allowed == @decision) ? FOLLOW_ALLOW :  FOLLOW_DENY;
+    }
+
+    return ($decision || FOLLOW_DEFER) eq FOLLOW_ALLOW;
 }
 
 sub follow_if_allowed
 {
     my ($self, $c, $response, $url, $attrs) = @_;
     if ($self->apply_rules( $c, $response, $url, $attrs ) ) {
+        $c->log->debug( "$url is allowed" );
         $c->pushback_request( Gungho::Request->new( GET => $url ) );
+    } else {
+        $c->log->debug( "$url is denied" );
     }
 }
 

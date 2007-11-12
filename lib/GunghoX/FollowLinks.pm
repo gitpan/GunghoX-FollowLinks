@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 8908 2007-11-11T05:39:52.397722Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 8925 2007-11-12T03:10:24.879523Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use base qw(Gungho::Component);
 use Gungho::Util;
-our $VERSION = '0.00002';
+our $VERSION = '0.00003';
 
 __PACKAGE__->mk_classdata($_) for qw(follow_links_parsers);
 
@@ -42,6 +42,7 @@ sub follow_links
     ;
     return () unless $parser;
 
+    $c->log->debug( "Parsing links for " . $response->request->uri );
     $parser->parse( $c, $response );
 }
 
@@ -64,6 +65,10 @@ GunghoX::FollowLinks - Automatically Follow Links Within Responses
               config:
                 tags:
                   - a
+            - module: MIME
+              config:
+                types:
+                  - text/html
       - module: Text
         config:
           rules:
@@ -82,7 +87,8 @@ GunghoX::FollowLinks - Automatically Follow Links Within Responses
 
 =head1 DESCRIPTION
 
-This is alpha release software. Do NOT use it in production yet!
+The most common action that a crawler takes is to follow links on a page.
+This module helps you with that task.
 
 =head1 METHODS
 

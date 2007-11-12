@@ -1,10 +1,17 @@
 Changes
 =======
 
-0.00002 Sun 11 Nov 2007
+0.00003 Mon 12 Nov 2007 [rev 248]
+  - Add Rules::MIME
+  - Add Parser::TEXT
+  - Add support for merge_rule in Parser. This allows users to specify
+    if their rule should be ANDed or ORed
+  - Change Rule constants to be strings
+
+0.00002 Sun 11 Nov 2007 [rev 237]
   - Actually make it work via Gungho
   - Add test t/02_basic.t
   - Fix documentation
 
-0.00001 Sun 11 Nov 2007
+0.00001 Sun 11 Nov 2007 [rev 229]
   - Initial release

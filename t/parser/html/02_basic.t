@@ -1,4 +1,5 @@
 package Dummy;
+use base qw(Gungho);
 use Test::More;
 use vars '$WANT_URL';
 
@@ -31,6 +32,11 @@ my $response = Gungho::Response->new(200, "OK", undef, <<EOHTML);
 EOHTML
 my $request = Gungho::Request->new(GET => "http://example.com");
 $response->request( $request );
+
+Dummy->bootstrap( {
+    provider => sub {},
+    
+});
 
 my $p;
 
