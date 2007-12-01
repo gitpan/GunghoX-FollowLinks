@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 8919 2007-11-12T03:03:30.295953Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 9010 2007-11-13T02:08:07.210715Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -82,12 +82,16 @@ sub apply_rules
 sub follow_if_allowed
 {
     my ($self, $c, $response, $url, $attrs) = @_;
+
+    my $allowed = 0;
     if ($self->apply_rules( $c, $response, $url, $attrs ) ) {
         $c->log->debug( "$url is allowed" );
         $c->pushback_request( Gungho::Request->new( GET => $url ) );
+        $allowed++;
     } else {
         $c->log->debug( "$url is denied" );
     }
+    return $allowed;
 }
 
 1;

@@ -17,6 +17,9 @@ lib/GunghoX/FollowLinks/Parser/Text.pm
 lib/GunghoX/FollowLinks/Rule.pm
 lib/GunghoX/FollowLinks/Rule/Allow.pm
 lib/GunghoX/FollowLinks/Rule/Deny.pm
+lib/GunghoX/FollowLinks/Rule/Fresh.pm
+lib/GunghoX/FollowLinks/Rule/Fresh/Cache.pm
+lib/GunghoX/FollowLinks/Rule/Fresh/Memory.pm
 lib/GunghoX/FollowLinks/Rule/HTML/SelectedTags.pm
 lib/GunghoX/FollowLinks/Rule/MIME.pm
 lib/GunghoX/FollowLinks/Rule/URI.pm
@@ -30,3 +33,5 @@ t/99_pod-coverage.t
 t/99_pod.t
 t/parser/html/01_load.t
 t/parser/html/02_basic.t
+t/rule/fresh/01_memory.t
+t/rule/fresh/02_cache.t

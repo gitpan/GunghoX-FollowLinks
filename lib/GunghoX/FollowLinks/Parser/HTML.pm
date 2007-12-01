@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/HTML.pm 8905 2007-11-11T05:32:04.269151Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/HTML.pm 9010 2007-11-13T02:08:07.210715Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -42,7 +42,9 @@ sub _start
         next unless exists $attr->{ $link_attr };
 
         my $url = URI->new_abs( $attr->{ $link_attr }, $base );
-        $container->follow_if_allowed( $c, $response, $url, { tag => $tag, attr => $attr } );
+        if ($container->follow_if_allowed( $c, $response, $url, { tag => $tag, attr => $attr } )) {
+            $self->{ 'count' }++;
+        }
     }
 }
 
@@ -53,9 +55,11 @@ sub parse
     my $parser = $self->parser;
     local $parser->{ 'response' }  = $response;
     local $parser->{ 'container' } = $self;
-    local $parser->{ 'context'  }  = $c;
+    local $parser->{ 'context' }   = $c;
+    local $parser->{ 'count' }     = 0;
     $parser->parse( $response->content );
     $parser->eof;
+    return $parser->{ 'count' };
 }
 
 1;

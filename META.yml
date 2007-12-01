@@ -2,6 +2,9 @@
 abstract: Automatically Follow Links Within Responses
 author: 
   - Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
+build_requires: 
+  Test::More: 0
+  URI: 0
 distribution_type: module
 generated_by: Module::Install version 0.68
 license: perl
@@ -14,11 +17,11 @@ no_index:
     - inc
     - t
 requires: 
-  Gungho: 0.09003
+  Gungho: 0.09005
   HTML::Parser: 0
   HTML::Tagset: 0
   MIME::Types: 0
   Sub::Exporter: 0
   URI::Match: 0
 tests: t/*.t t/*/*/*.t
-version: 0.00003
+version: 0.00004

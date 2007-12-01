@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 8925 2007-11-12T03:10:24.879523Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 9010 2007-11-13T02:08:07.210715Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use base qw(Gungho::Component);
 use Gungho::Util;
-our $VERSION = '0.00003';
+our $VERSION = '0.00004';
 
 __PACKAGE__->mk_classdata($_) for qw(follow_links_parsers);
 
@@ -95,6 +95,14 @@ This module helps you with that task.
 =head2 setup
 
 =head2 follow_links
+
+Parses the given HTTP::Response/Gungho::Response object and dispatches the
+appropriate parser from its content-type.
+
+For each URL found, Automatically dispatches the rules given to the parser,
+and if the rules match, the URL is sent to Gungho-E<gt>send_request.
+
+Returns the number of matches found.
               
 =head1 AUTHOR
 

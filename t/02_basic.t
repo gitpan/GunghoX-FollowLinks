@@ -1,21 +1,14 @@
-package Dummy;
-use base qw(Gungho::Component);
-use Test::More;
-__PACKAGE__->mk_classdata('link_count' => 0);
-sub pushback_request {
-    my ($c, $req) = @_;
-
-    is($req->uri->host, 'www.example.com', "host is www.example.com");
-    if ($req->uri->host eq 'www.example.com') {
-        $c->link_count( $c->link_count + 1 );
-    }
-}
-
 use strict;
-use Test::More (tests => 8);
+use Test::More;
 
 BEGIN
 {
+    eval "use POE; use POE::Component::Client::HTTP";
+    if ($@) {
+        plan skip_all => "POE engine not available";
+    } else {
+        plan tests => 8;
+    }
     use_ok("Gungho");
     use_ok("Gungho::Request");
     use_ok("Gungho::Response");
@@ -24,6 +17,23 @@ BEGIN
 }
 # XXX - Hmm, why isn't this working?
 # use GunghoX::FollowLinks::Rule qw(FOLLOW_ALLOW);
+
+{
+    package Dummy;
+    use Test::More;
+    use vars qw(@ISA $VERSION);
+    $VERSION = '0.00001';
+    @ISA = qw(Gungho::Component);
+    __PACKAGE__->mk_classdata('link_count' => 0);
+    sub  pushback_request {
+        my ($c, $req) = @_;
+
+        is($req->uri->host, 'www.example.com', "host is www.example.com");
+        if ($req->uri->host eq 'www.example.com') {
+            $c->link_count( $c->link_count + 1 );
+        }
+    }
+}
 
 Gungho->bootstrap(
     {

@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.00004 Mon 13 Nov 2007 [rev 307]
+  - Add Rule::Fresh that allows you to only follow links that are fresh.
+  - Make follow_links() return the number of links found and dispatched.
+  - Slightly more docs
+
 0.00003 Mon 12 Nov 2007 [rev 248]
   - Add Rules::MIME
   - Add Parser::TEXT

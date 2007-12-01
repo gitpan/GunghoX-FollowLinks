@@ -12,7 +12,7 @@ sub pushback_request
 
 package main;
 use strict;
-use Test::More (tests => 16);
+use Test::More (tests => 22);
 
 BEGIN
 {
@@ -25,6 +25,7 @@ BEGIN
 my $response = Gungho::Response->new(200, "OK", undef, <<EOHTML);
 <html>
 <body>
+    <a href="http://www.example.com">bar</a>
     <a href="http://www.example.com">foo</a>
     <img src="http://www.example.com/image.gif">
 </body>
@@ -67,7 +68,8 @@ my $p;
     isa_ok($p, "GunghoX::FollowLinks::Parser::HTML");
 
     local $Dummy::WANT_URL = "http://www.example.com/image.gif";
-    $p->parse('Dummy', $response);
+    my $count = $p->parse('Dummy', $response);
+    is($count, 1);
 }
 
 {
@@ -87,5 +89,6 @@ my $p;
     isa_ok($p, "GunghoX::FollowLinks::Parser::HTML");
 
     local $Dummy::WANT_URL = "http://www.example.com";
-    $p->parse('Dummy', $response);
+    my $count = $p->parse('Dummy', $response);
+    is($count, 2);
 }

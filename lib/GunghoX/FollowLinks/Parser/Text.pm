@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/Text.pm 8905 2007-11-11T05:32:04.269151Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/Text.pm 9010 2007-11-13T02:08:07.210715Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -21,10 +21,14 @@ sub parse
     my $base = $response->request->uri;
     my $content = $response->content;
 
+    my $count = 0;
     while ( $content =~ m{\b(?:[^:/?#]+:)?(?://[^/?#]*)?[^?#]*(?:\?[^#]*)?(?:#.*?))\b}gsm ) {
         my $uri = URI->new_abs( $1, $base );
-        $self->follow_if_allowed( $c, $response, $uri );
+        if ($self->follow_if_allowed( $c, $response, $uri )) {
+            $count++;
+        }
     }
+    return $count;
 }
 
 1;
@@ -34,5 +38,24 @@ __END__
 =head1 NAME
 
 GunghoX::FollowLinks::Parser::Text - Parse URLs Out Of Plain Text
+
+=head1 SYNOPSIS
+
+  my $parser = GunghoX::FollowLinks::Parser::Text->new(
+    rules => [
+      ...
+    ]
+  );
+  my $count = $parser->parse($text);
+
+=head1 DESCRIPTION
+
+Parses text, looking for URLs.
+
+=head1 METHODS
+
+=head1 new
+
+=head1 parse
 
 =cut
