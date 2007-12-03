@@ -1,7 +1,10 @@
 Changes
 =======
 
-0.00004 Mon 13 Nov 2007 [rev 307]
+0.00004 Mon 03 Dec 2007 [rev 308]
+  - Release as 0.00004. No code changes.
+
+0.00004_01 Mon 01 Dec 2007 [rev 307]
   - Add Rule::Fresh that allows you to only follow links that are fresh.
   - Make follow_links() return the number of links found and dispatched.
   - Slightly more docs
