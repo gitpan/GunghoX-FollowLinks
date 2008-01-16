@@ -24,4 +24,4 @@ requires:
   Sub::Exporter: 0
   URI::Match: 0
 tests: t/*.t t/*/*/*.t
-version: 0.00004
+version: 0.00005

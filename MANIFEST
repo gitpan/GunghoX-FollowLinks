@@ -11,6 +11,8 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/GunghoX/FollowLinks.pm
+lib/GunghoX/FollowLinks/Filter.pm
+lib/GunghoX/FollowLinks/Filter/Strip.pm
 lib/GunghoX/FollowLinks/Parser.pm
 lib/GunghoX/FollowLinks/Parser/HTML.pm
 lib/GunghoX/FollowLinks/Parser/Text.pm

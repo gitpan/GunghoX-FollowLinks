@@ -1,6 +1,13 @@
 Changes
 =======
 
+0.00005 Thu 17 Jan 2008 [rev 434]
+  - Add filter mechanism, allowing you to filter the URI that was
+    selected.
+  - Add "hashref" option for Cache storage backend of Rule::Fresh
+  - Allow "url" match specification for Rule::URI. This matches the 
+    entire url. via $url->match_parts($rule)
+
 0.00004 Mon 03 Dec 2007 [rev 308]
   - Release as 0.00004. No code changes.
 

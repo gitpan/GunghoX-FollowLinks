@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 9010 2007-11-13T02:08:07.210715Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 39012 2008-01-16T15:32:02.077721Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -11,7 +11,7 @@ use Gungho::Request;
 use Gungho::Util;
 use GunghoX::FollowLinks::Rule qw(FOLLOW_ALLOW FOLLOW_DENY FOLLOW_DEFER);
 
-__PACKAGE__->mk_accessors($_) for qw(rules content_type merge_rule);
+__PACKAGE__->mk_accessors($_) for qw(rules filters content_type merge_rule);
 
 sub parse { die "Must override parse()" }
 
@@ -36,11 +36,23 @@ sub new
         }
         push @rules, $rule;
     }
+
+    my @filters;
+    foreach my $filter (@{ $args{filters} }) {
+        if (! eval { $filter->isa('GunghoX::FollowLinks::Filter') } || $@) {
+            my $module = $filter->{module};
+            my $pkg = Gungho::Util::load_module($module, 'GunghoX::FollowLinks::Filter');
+            $filter = $pkg->new( %{ $filter->{config} } );
+        }
+        push @filters, $filter;
+    }
+
     return $class->next::method(
         content_type => 'DEFAULT',
         merge_rule   => 'ANY',
         @_,
-        rules => \@rules
+        rules => \@rules,
+        filters => \@filters,
     );
 }
 
@@ -92,6 +104,16 @@ sub follow_if_allowed
         $c->log->debug( "$url is denied" );
     }
     return $allowed;
+}
+
+sub apply_filters
+{
+    my ($self, $c, $uri) = @_;
+
+    my $filters = $self->filters ;
+    foreach my $filter (@{ $filters }) {
+        $filter->apply($c, $uri);
+    }
 }
 
 1;

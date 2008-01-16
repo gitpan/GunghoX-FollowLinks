@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/URI.pm 8923 2007-11-12T03:07:51.610373Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/URI.pm 39010 2008-01-16T14:50:27.747072Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -40,7 +40,15 @@ sub apply
         my %m = %$m;
         my $action = delete $m{action} || FOLLOW_ALLOW;
         my $nomatch = delete $m{action_nomatch};
-        if ($url->match_parts(%m)) {
+
+        my @match_args;
+        if ($m{url}) {
+            @match_args = ($m{url});
+        } else {
+            @match_args = %m;
+        }
+
+        if ($url->match_parts(@match_args)) {
             return $action;
         }
 

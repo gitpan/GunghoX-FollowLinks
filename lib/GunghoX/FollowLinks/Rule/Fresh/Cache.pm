@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/Fresh/Cache.pm 31640 2007-12-01T15:48:28.904993Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/Fresh/Cache.pm 39009 2008-01-16T14:40:20.709648Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -19,7 +19,9 @@ sub new
     my $cache_module = Gungho::Util::load_module(
         $cache_config->{module} || die "No cache module specified"
     );
-    my $cache = $cache_module->new( %{ $cache_config->{config} || {} } );
+    my $hashref = delete $cache_config->{config}->{hashref};
+    my %cache_args = %{ $cache_config->{config} || {} } ;
+    my $cache = $cache_module->new( $hashref ? \%cache_args : %cache_args);
     
     return bless { cache => $cache }, $class;
 }
@@ -43,6 +45,23 @@ __END__
 =head1 NAME 
 
 GunghoX::FollowLinks::Rule::Fresh::Cache - Store URLs In A Cache Of Your Choice
+
+=head1 SYNOPSIS
+
+  GunghoX::FollowLinks::Rule::Fresh->new(
+    storage => {
+      module => "Cache",
+      config => {
+        cache => {
+          module => "Cache::Memcached",
+          config => {
+            hashref => 1,
+            servers => [ '127.0.0.1:11211' ]
+          }
+        }
+      }
+    }
+  );
 
 =head1 METHODS
 

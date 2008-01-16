@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 9010 2007-11-13T02:08:07.210715Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 39013 2008-01-16T15:48:49.434516Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use base qw(Gungho::Component);
 use Gungho::Util;
-our $VERSION = '0.00004';
+our $VERSION = '0.00005';
 
 __PACKAGE__->mk_classdata($_) for qw(follow_links_parsers);
 

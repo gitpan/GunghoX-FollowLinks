@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/Text.pm 9010 2007-11-13T02:08:07.210715Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/Text.pm 39011 2008-01-16T15:31:39.350176Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -24,6 +24,7 @@ sub parse
     my $count = 0;
     while ( $content =~ m{\b(?:[^:/?#]+:)?(?://[^/?#]*)?[^?#]*(?:\?[^#]*)?(?:#.*?))\b}gsm ) {
         my $uri = URI->new_abs( $1, $base );
+        $self->apply_filters($c, $uri);
         if ($self->follow_if_allowed( $c, $response, $uri )) {
             $count++;
         }

@@ -37,6 +37,7 @@ my $url = URI->new("http://search.cpan.org");
 is( $rule->apply(undef, undef, $url, undef), FOLLOW_ALLOW);
 is( $rule->apply(undef, undef, $url, undef), FOLLOW_DENY);
 
+diag('sleeping for 10');
 sleep 10;
 is( $rule->apply(undef, undef, $url, undef), FOLLOW_ALLOW);
 
