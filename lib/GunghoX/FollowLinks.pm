@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 39013 2008-01-16T15:48:49.434516Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks.pm 40585 2008-01-29T15:58:05.363572Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -7,10 +7,11 @@ package GunghoX::FollowLinks;
 use strict;
 use warnings;
 use base qw(Gungho::Component);
+use Class::Null;
 use Gungho::Util;
-our $VERSION = '0.00005';
+our $VERSION = '0.00006';
 
-__PACKAGE__->mk_classdata($_) for qw(follow_links_parsers);
+__PACKAGE__->mk_classdata($_) for qw(follow_links_parsers follow_link_log);
 
 sub setup
 {
@@ -35,15 +36,18 @@ sub follow_links
 {
     my ($c, $response) = @_;
 
-    my $content_type = $response->content_type;
-    my $parser =
-        $c->follow_links_parsers->{ $content_type } ||
-        $c->follow_links_parsers->{ 'DEFAULT' } 
-    ;
-    return () unless $parser;
-
-    $c->log->debug( "Parsing links for " . $response->request->uri );
-    $parser->parse( $c, $response );
+    eval {
+        my $content_type = $response->content_type;
+        my $parser =
+            $c->follow_links_parsers->{ $content_type } ||
+            $c->follow_links_parsers->{ 'DEFAULT' } 
+        ;
+        if ($parser) {
+            $c->log->debug( "Parsing links for " . $response->request->uri );
+            $parser->parse( $c, $response );
+        }
+    };
+    warn if $@;
 }
 
 1;

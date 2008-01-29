@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/Fresh.pm 31640 2007-12-01T15:48:28.904993Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/Fresh.pm 40501 2008-01-24T04:48:27.359921Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -32,10 +32,10 @@ sub apply
     my ($self, $c, $response, $url, $attrs) = @_;
 
     my $storage = $self->storage;
-    if ($storage->get($url)) {
+    if ($storage->get($url->as_string)) {
         return FOLLOW_DENY;
     } else {
-        $storage->put($url);
+        $storage->put($url->as_string);
         return FOLLOW_ALLOW;
     }
 }

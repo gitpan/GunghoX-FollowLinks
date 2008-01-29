@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/Fresh/Cache.pm 39009 2008-01-16T14:40:20.709648Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Rule/Fresh/Cache.pm 40502 2008-01-24T04:50:29.650533Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use base qw(Class::Accessor::Fast);
 
-__PACKAGE__->mk_accessors($_) for qw(cache);
+__PACKAGE__->mk_accessors($_) for qw(cache _memcached_managed_hack);
 
 sub new
 {
@@ -19,22 +19,31 @@ sub new
     my $cache_module = Gungho::Util::load_module(
         $cache_config->{module} || die "No cache module specified"
     );
+        
     my $hashref = delete $cache_config->{config}->{hashref};
     my %cache_args = %{ $cache_config->{config} || {} } ;
     my $cache = $cache_module->new( $hashref ? \%cache_args : %cache_args);
-    
-    return bless { cache => $cache }, $class;
+    return bless {
+        cache => $cache,
+        _memcached_managed_hack => $cache->isa('Cache::Memcached::Managed'),
+    }, $class;
 }
 
 sub put
 {
     my ($self, $url) = @_;
-    $self->cache->set($url, 1);
+
+    if ($self->_memcached_managed_hack) {
+        $self->cache->set(1, $url);
+    } else {
+        $self->cache->set($url, 1);
+    }
 }
 
 sub get
 {
     my ($self, $url) = @_;
+
     $self->cache->get($url);
 }
 

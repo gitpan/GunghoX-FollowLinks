@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/HTML.pm 39011 2008-01-16T15:31:39.350176Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser/HTML.pm 40584 2008-01-29T14:54:08.742000Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -10,6 +10,7 @@ use base qw(GunghoX::FollowLinks::Parser);
 use HTML::Parser;
 use HTML::Tagset;
 use URI;
+use List::Util qw(shuffle);
 
 __PACKAGE__->mk_accessors($_) for qw(parser);
 
@@ -38,11 +39,10 @@ sub _start
     my $c         = $self->{ 'context' };
     my $response  = $self->{ 'response' };
     my $base      = $response->request->uri;
-    foreach my $link_attr (@$links) {
+    foreach my $link_attr (shuffle @$links) {
         next unless exists $attr->{ $link_attr };
 
         my $url = URI->new_abs( $attr->{ $link_attr }, $base );
-        $container->apply_filters($c, $url);
         if ($container->follow_if_allowed( $c, $response, $url, { tag => $tag, attr => $attr } )) {
             $self->{ 'count' }++;
         }

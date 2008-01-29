@@ -1,4 +1,5 @@
 Changes
+eg/crawl-site.pl
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
 inc/Module/Install/AutoInstall.pm
@@ -33,6 +34,8 @@ t/02_basic.t
 t/99_kwalitee.t
 t/99_pod-coverage.t
 t/99_pod.t
+t/filter/strip/02_basic.t
+t/filter/strip/03_scheme.t
 t/parser/html/01_load.t
 t/parser/html/02_basic.t
 t/rule/fresh/01_memory.t

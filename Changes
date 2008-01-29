@@ -1,6 +1,15 @@
 Changes
 =======
 
+0.00006 Wed 30 Jan 2008 [rev 480]
+  - Change the timing when filters are invoked.
+  - Filter::Strip now accepts strip_query strip_fragment strip_userinfo
+  - URLs are not forwarded to be followed unless the URL is valid
+    (it has to have a scheme and a host)
+  - URLs that have been dispatched via FollowLinks now contain a 
+    'auto_follow_request' element in the notes() hash
+  - Fresh::Cache now works with Cache::Memcached::Managed
+
 0.00005 Thu 17 Jan 2008 [rev 434]
   - Add filter mechanism, allowing you to filter the URI that was
     selected.

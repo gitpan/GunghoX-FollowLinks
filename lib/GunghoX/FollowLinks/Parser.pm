@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 39012 2008-01-16T15:32:02.077721Z daisuke  $
+# $Id: /mirror/perl/GunghoX-FollowLinks/trunk/lib/GunghoX/FollowLinks/Parser.pm 40584 2008-01-29T14:54:08.742000Z daisuke  $
 #
 # Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -97,11 +97,19 @@ sub follow_if_allowed
 
     my $allowed = 0;
     if ($self->apply_rules( $c, $response, $url, $attrs ) ) {
-        $c->log->debug( "$url is allowed" );
-        $c->pushback_request( Gungho::Request->new( GET => $url ) );
-        $allowed++;
+        $self->apply_filters( $c, $url );
+
+        if (! $url->scheme || ! $url->host) {
+            $c->log->debug( "DENY $url (ALLOW by rule, but URL is invalid)" );
+            $allowed = 0;
+        } else {
+            $c->log->debug( "ALLOW $url" );
+            my $request = $self->construct_follow_request($c, $response, $url, $attrs);
+            $c->pushback_request( $request );
+            $allowed++;
+        }
     } else {
-        $c->log->debug( "$url is denied" );
+        $c->log->debug( "DENY $url" );
     }
     return $allowed;
 }
@@ -114,6 +122,14 @@ sub apply_filters
     foreach my $filter (@{ $filters }) {
         $filter->apply($c, $uri);
     }
+}
+
+sub construct_follow_request
+{
+    my ($self, $c, $response, $url, $attrs) = @_;
+    my $req = Gungho::Request->new( GET => $url ) ;
+    $req->notes('auto_follow_request', 1);
+    return $req;
 }
 
 1;
